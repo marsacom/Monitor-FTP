@@ -14,8 +14,8 @@
 # - Author : Brayden Kukla, 2024
 
 # Variables to be set
-$path = 'R:\PhotoSync' # The path you wish to monitor
-$recipient = 'brayden@ssisurplus.com' # The recipient email of the status updates
+$path = 'YOUR-PATH-HERE' # The path you wish to monitor
+$recipient = 'YOUR-EMAIL-HERE' # The recipient email of the status updates
 $inbox_index = 0 # The inbox index of your MailSlurp inbox, only change if using a custom created inbox
 
 # Send a status email to the designated recipient to notify that the directory is not being uploaded to
