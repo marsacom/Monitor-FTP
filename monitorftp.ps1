@@ -1,25 +1,27 @@
 #Variables to set
-$path = 'C:\Users\bkukla\OneDrive - S&S Industrial Surplus LLC\Desktop\Dev\_Projects'
-$identity = 'SSIS\bkukla'
+$path = 'R:\PhotoSync'
+$today = Get-Date
+$days_subtract = -1
+$yesterday = $today.AddDays($days_subtract)
+$date = 0
 
-Get-ChildItem -Directory -Path $path -Recurse -Depth 2 |
+Get-ChildItem -Directory -Path $path |
     Foreach-Object {  
-        $Acl = Get-Acl -Path $_.FullName  
-        foreach ($Access in $acl.Access) {
-            if($Access.IdentityReference -ne $identity){Continue}
-            
-            #if($oldDate -le $_.LastWriteTime) {
-            #    $newDate = $_.LastWriteTime
-            #}else{
-            #    $newDate = $oldDate
-            #}
+        if($_.LastWriteTime -ge $date){
+            $date = $_.LastWriteTime
+        }
 
-            $Properties = [ordered]@{  
-                                        'FolderName'        = $_.FullName   
-                                        'LastWriteTime'     = $_.LastWriteTime  
-                                        'OldDate'           = $oldDate
-                                        'NewDate'           = $newDate
-                                    }  
-            [PSCustomObject]$Properties  
-        }  
-    } | Export-Csv -Path "C:\temp\FolderPermissions.csv" 
+        $Properties = [ordered]@{  
+                                    'Folder'        = $_.FullName   
+                                    'Last Write Time'     = $_.LastWriteTime 
+                                }  
+        [PSCustomObject]$Properties  
+
+    } | Export-Csv -Path "C:\temp\FolderPermissions.csv" -NoTypeInformation
+
+if($date -lt $yesterday){
+    Write-Host "Directory $path has not had files uploaded in $($days_subtract*-1) day(s) - Most recent upload : $date"
+}else{
+    Write-Host "Directory $path is to date - Most recent upload : $date"
+}
+
